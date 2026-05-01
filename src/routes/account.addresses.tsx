@@ -148,7 +148,7 @@ function AddressesPage() {
   );
 }
 
-function Input({ className = "", value, onChange, ...rest }: { value: string; onChange: (v: string) => void; className?: string } & React.InputHTMLAttributes<HTMLInputElement>) {
+function Input({ className = "", value, onChange, ...rest }: { value: string; onChange: (v: string) => void; className?: string } & Omit<React.InputHTMLAttributes<HTMLInputElement>, "value" | "onChange">) {
   return (
     <input
       {...rest}
