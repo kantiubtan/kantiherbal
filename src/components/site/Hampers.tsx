@@ -1,4 +1,5 @@
 import hamperImg from "@/assets/hamper.jpg";
+import { whatsappLink } from "@/lib/contact";
 
 const occasions = ["Diwali", "Haldi-Kumkum", "Wedding", "Return gifts", "Corporate"];
 
@@ -10,7 +11,7 @@ export function Hampers() {
           <div className="absolute -inset-6 rounded-[2.5rem] bg-sun opacity-25 blur-3xl" aria-hidden />
           <img
             src={hamperImg}
-            alt="Sree Kanti gift hamper with assortment of natural skincare products"
+            alt="Kanti gift hamper with assortment of natural skincare products"
             width={1280}
             height={1024}
             loading="lazy"
@@ -40,7 +41,7 @@ export function Hampers() {
             ))}
           </div>
           <a
-            href="https://wa.me/918208427976?text=Hi%20Sree%20Kanti%2C%20I%27d%20like%20a%20custom%20hamper"
+            href={whatsappLink("Hi Kanti, I'd like a custom hamper")}
             target="_blank"
             rel="noreferrer"
             className="mt-9 inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 text-sm font-semibold text-primary-foreground shadow-glow transition hover:bg-primary/90"

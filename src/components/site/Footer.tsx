@@ -1,4 +1,6 @@
-import { Instagram, Mail, Phone, Leaf } from "lucide-react";
+import { Instagram, Mail, Phone } from "lucide-react";
+import logo from "@/assets/logo.png";
+import { PHONE_DISPLAY, PHONE_TEL } from "@/lib/contact";
 
 export function Footer() {
   return (
@@ -6,10 +8,8 @@ export function Footer() {
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-3 lg:px-8">
         <div>
           <div className="flex items-center gap-2.5">
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-sun text-primary-foreground shadow-soft">
-              <Leaf className="h-4.5 w-4.5" />
-            </span>
-            <span className="font-display text-xl font-700 text-primary">Sree Kanti</span>
+            <img src={logo} alt="Kanti" className="h-10 w-10 rounded-full object-cover shadow-soft" />
+            <span className="font-display text-xl font-700 text-primary">Kanti</span>
           </div>
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
             <span className="font-marathi">नैसर्गिक skincare — turmeric, sandalwood आणि herbs पासून.</span>
@@ -20,7 +20,7 @@ export function Footer() {
         <div>
           <h4 className="text-sm font-semibold uppercase tracking-wider text-foreground/80">Contact</h4>
           <ul className="mt-4 space-y-3 text-sm text-muted-foreground">
-            <li><a href="tel:+918208427976" className="inline-flex items-center gap-2 hover:text-primary"><Phone className="h-4 w-4" /> 8208427976</a></li>
+            <li><a href={`tel:${PHONE_TEL}`} className="inline-flex items-center gap-2 hover:text-primary"><Phone className="h-4 w-4" /> {PHONE_DISPLAY}</a></li>
             <li><a href="mailto:kantiubtan@gmail.com" className="inline-flex items-center gap-2 hover:text-primary"><Mail className="h-4 w-4" /> kantiubtan@gmail.com</a></li>
             <li><a href="https://www.instagram.com/kantiubtan/" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 hover:text-primary"><Instagram className="h-4 w-4" /> @kantiubtan</a></li>
           </ul>
@@ -35,7 +35,7 @@ export function Footer() {
         </div>
       </div>
       <div className="border-t border-border/60 py-5 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} Sree Kanti — Handcrafted with care in India.
+        © {new Date().getFullYear()} Kanti — Handcrafted with care in India.
       </div>
     </footer>
   );

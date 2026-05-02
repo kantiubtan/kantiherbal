@@ -49,7 +49,7 @@ export function Hero() {
           <div className="relative overflow-hidden rounded-[2rem] border border-border/60 bg-card shadow-glow">
             <img
               src={heroImg}
-              alt="Turmeric, sandalwood, neem and rose petals — the herbal ingredients of Sree Kanti skincare"
+              alt="Turmeric, sandalwood, neem and rose petals — the herbal ingredients of Kanti skincare"
               width={1536}
               height={1280}
               className="aspect-[4/5] w-full object-cover md:aspect-[5/6]"

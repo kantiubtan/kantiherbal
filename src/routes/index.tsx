@@ -11,13 +11,13 @@ import { Footer } from "@/components/site/Footer";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Sree Kanti — Natural Ayurvedic Skincare | Ubtan, Face Masks & Gift Hampers" },
+      { title: "Kanti — Natural Ayurvedic Skincare | Ubtan, Face Masks & Gift Hampers" },
       {
         name: "description",
         content:
-          "Sree Kanti — handcrafted natural skincare from turmeric, sandalwood and herbs. Shop ubtan, bath salts, soaps, face masks, face oil and custom gift hampers with WhatsApp checkout.",
+          "Kanti — handcrafted natural skincare from turmeric, sandalwood and herbs. Shop ubtan, bath salts, soaps, face masks, face oil and custom gift hampers with WhatsApp checkout.",
       },
-      { property: "og:title", content: "Sree Kanti — Where Purity Meets Glow" },
+      { property: "og:title", content: "Kanti — Where Purity Meets Glow" },
       {
         property: "og:description",
         content:

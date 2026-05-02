@@ -1,8 +1,9 @@
 import { Mail, Phone, Instagram, MessageCircle } from "lucide-react";
+import { PHONE_DISPLAY, PHONE_TEL, WHATSAPP_NUMBER } from "@/lib/contact";
 
 const channels = [
-  { icon: Phone, label: "Phone", value: "8208427976", href: "tel:+918208427976" },
-  { icon: MessageCircle, label: "WhatsApp", value: "Order in one tap", href: "https://wa.me/918208427976" },
+  { icon: Phone, label: "Phone", value: PHONE_DISPLAY, href: `tel:${PHONE_TEL}` },
+  { icon: MessageCircle, label: "WhatsApp", value: "Order in one tap", href: `https://wa.me/${WHATSAPP_NUMBER}` },
   { icon: Mail, label: "Email", value: "kantiubtan@gmail.com", href: "mailto:kantiubtan@gmail.com" },
   { icon: Instagram, label: "Instagram", value: "@kantiubtan", href: "https://www.instagram.com/kantiubtan/" },
 ];

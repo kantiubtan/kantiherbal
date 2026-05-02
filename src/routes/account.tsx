@@ -6,7 +6,7 @@ import { Footer } from "@/components/site/Footer";
 import { User, ShoppingBag, Heart, MapPin, LogOut } from "lucide-react";
 
 export const Route = createFileRoute("/account")({
-  head: () => ({ meta: [{ title: "My account — Sree Kanti" }] }),
+  head: () => ({ meta: [{ title: "My account — Kanti" }] }),
   component: AccountLayout,
 });
 
@@ -43,7 +43,7 @@ function AccountLayout() {
       <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <header className="mb-10">
           <span className="text-xs font-semibold uppercase tracking-[0.2em] text-terracotta">
-            Sree Kanti
+            Kanti
           </span>
           <h1 className="mt-2 font-display text-4xl font-700 text-foreground">My account</h1>
           <p className="mt-2 text-sm text-muted-foreground">Welcome back, {user.email}.</p>

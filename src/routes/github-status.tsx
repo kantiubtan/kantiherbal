@@ -12,7 +12,7 @@ import { AlertCircle, CheckCircle2, GitCommit, RefreshCw, ExternalLink, Github }
 export const Route = createFileRoute("/github-status")({
   head: () => ({
     meta: [
-      { title: "GitHub Sync Status — Sree Kanti" },
+      { title: "GitHub Sync Status — Kanti" },
       { name: "description", content: "Track recent commits, last sync time, and any sync errors for the connected GitHub repository." },
       { property: "og:title", content: "GitHub Sync Status" },
       { property: "og:description", content: "Recent commits and sync health for the connected repository." },

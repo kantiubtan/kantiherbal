@@ -20,7 +20,7 @@ export function Products() {
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
             <span className="text-xs font-semibold uppercase tracking-[0.2em] text-terracotta">
-              Sree Kanti Store
+              Kanti Store
             </span>
             <h2 className="mt-3 font-display text-4xl font-700 text-foreground md:text-5xl">
               Products for <span className="italic text-primary">you</span>

@@ -15,7 +15,7 @@ export const Route = createFileRoute("/auth")({
     redirect: typeof s.redirect === "string" ? s.redirect : undefined,
     mode: s.mode === "signup" ? "signup" : "signin",
   }),
-  head: () => ({ meta: [{ title: "Sign in — Sree Kanti" }] }),
+  head: () => ({ meta: [{ title: "Sign in — Kanti" }] }),
   component: AuthPage,
 });
 
@@ -39,7 +39,7 @@ function AuthPage() {
     setLoading(true);
     try {
       if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -47,7 +47,21 @@ function AuthPage() {
             data: { full_name: fullName, phone },
           },
         });
-        if (error) throw error;
+        if (error) {
+          // Supabase returns "User already registered" when email+password user exists
+          if (/already|exists|registered/i.test(error.message)) {
+            toast.error("This email is already registered. Please sign in instead.");
+            setMode("signin");
+            return;
+          }
+          throw error;
+        }
+        // When email exists (e.g. via Google), Supabase returns user with empty identities
+        if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+          toast.error("This email is already registered (try signing in with Google).");
+          setMode("signin");
+          return;
+        }
         toast.success("Check your email to confirm your account.");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
