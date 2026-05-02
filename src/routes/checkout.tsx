@@ -5,11 +5,12 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
+import { whatsappLink } from "@/lib/contact";
 import { toast } from "sonner";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, MessageCircle } from "lucide-react";
 
 export const Route = createFileRoute("/checkout")({
-  head: () => ({ meta: [{ title: "Checkout — Sree Kanti" }] }),
+  head: () => ({ meta: [{ title: "Checkout — Kanti" }] }),
   component: CheckoutPage,
 });
 
