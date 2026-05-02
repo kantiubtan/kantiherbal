@@ -148,13 +148,6 @@ function CheckoutPage() {
         <main className="mx-auto max-w-2xl px-4 py-20 text-center">
           <CheckCircle2 className="mx-auto h-14 w-14 text-herb" />
           <h1 className="mt-6 font-display text-4xl font-700 text-foreground">Order placed!</h1>
-  if (success) {
-    return (
-      <div className="min-h-screen bg-background">
-        <Header />
-        <main className="mx-auto max-w-2xl px-4 py-20 text-center">
-          <CheckCircle2 className="mx-auto h-14 w-14 text-herb" />
-          <h1 className="mt-6 font-display text-4xl font-700 text-foreground">Order placed!</h1>
           <p className="mt-3 text-muted-foreground">
             Your order <span className="font-semibold text-foreground">{success.orderNumber}</span> has been received.
             We've opened WhatsApp so you can send the enquiry to confirm it.
