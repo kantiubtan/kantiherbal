@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
-import { Leaf, ShoppingBag, User, LogIn } from "lucide-react";
+import { ShoppingBag, User, LogIn } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
+import logo from "@/assets/logo.png";
 
 const nav = [
   { to: "/", label: "Home" },
@@ -19,11 +20,9 @@ export function Header() {
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
         <Link to="/" className="group flex items-center gap-2.5">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-sun text-primary-foreground shadow-soft">
-            <Leaf className="h-4.5 w-4.5" strokeWidth={2.2} />
-          </span>
+          <img src={logo} alt="Kanti — Where Purity Meets Glow" className="h-10 w-10 rounded-full object-cover shadow-soft" />
           <span className="flex flex-col leading-tight">
-            <span className="font-display text-lg font-700 text-primary">Sree Kanti</span>
+            <span className="font-display text-lg font-700 text-primary">Kanti</span>
             <span className="-mt-0.5 hidden text-[10px] uppercase tracking-[0.18em] text-muted-foreground sm:inline">
               Where Purity Meets Glow
             </span>

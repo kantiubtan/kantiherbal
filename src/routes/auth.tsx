@@ -15,7 +15,7 @@ export const Route = createFileRoute("/auth")({
     redirect: typeof s.redirect === "string" ? s.redirect : undefined,
     mode: s.mode === "signup" ? "signup" : "signin",
   }),
-  head: () => ({ meta: [{ title: "Sign in — Sree Kanti" }] }),
+  head: () => ({ meta: [{ title: "Sign in — Kanti" }] }),
   component: AuthPage,
 });
 
