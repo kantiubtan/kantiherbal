@@ -37,6 +37,12 @@ export const Route = createRootRoute({
       { name: "author", content: "Kanti" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:title", content: "Kanti — Natural Ayurvedic Skincare" },
+      { name: "twitter:title", content: "Kanti — Natural Ayurvedic Skincare" },
+      { property: "og:description", content: "Handcrafted natural skincare — ubtan, face masks, soaps, oils & gift hampers." },
+      { name: "twitter:description", content: "Handcrafted natural skincare — ubtan, face masks, soaps, oils & gift hampers." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/rq2iiMYUozPA3HvKP7JukPWr0252/social-images/social-1777709850447-Sree_(1).webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/rq2iiMYUozPA3HvKP7JukPWr0252/social-images/social-1777709850447-Sree_(1).webp" },
     ],
     links: [
       {
