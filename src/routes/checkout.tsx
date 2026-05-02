@@ -34,7 +34,7 @@ function CheckoutPage() {
   const [selected, setSelected] = useState<string | null>(null);
   const [notes, setNotes] = useState("");
   const [placing, setPlacing] = useState(false);
-  const [success, setSuccess] = useState<string | null>(null);
+  const [success, setSuccess] = useState<{ orderNumber: string; waUrl: string } | null>(null);
 
   // Inline new-address form
   const [newAddr, setNewAddr] = useState({ full_name: "", phone: "", line1: "", line2: "", city: "", state: "", pincode: "" });
@@ -111,8 +111,20 @@ function CheckoutPage() {
       );
       if (ierr) throw ierr;
 
+      // Build WhatsApp enquiry message for the shop
+      const lines = items
+        .map((it) => `• ${it.name} × ${it.quantity} — ₹${(it.price * it.quantity).toFixed(0)}`)
+        .join("\n");
+      const msg = `*New Kanti order ${order.order_number}*\n\n${lines}\n\n*Total:* ₹${total.toFixed(0)}\n*Payment:* COD\n\n*Ship to:*\n${shipping.full_name}\n${shipping.line1}${shipping.line2 ? ", " + shipping.line2 : ""}\n${shipping.city}, ${shipping.state} — ${shipping.pincode}\n📞 ${shipping.phone}${notes ? `\n\n*Notes:* ${notes}` : ""}`;
+      const waUrl = whatsappLink(msg);
+
+      // Open WhatsApp in a new tab so the customer can send the enquiry
+      if (typeof window !== "undefined") {
+        window.open(waUrl, "_blank", "noopener,noreferrer");
+      }
+
       clear();
-      setSuccess(order.order_number);
+      setSuccess({ orderNumber: order.order_number, waUrl });
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : "Order failed");
     } finally {
@@ -136,11 +148,26 @@ function CheckoutPage() {
         <main className="mx-auto max-w-2xl px-4 py-20 text-center">
           <CheckCircle2 className="mx-auto h-14 w-14 text-herb" />
           <h1 className="mt-6 font-display text-4xl font-700 text-foreground">Order placed!</h1>
+  if (success) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="mx-auto max-w-2xl px-4 py-20 text-center">
+          <CheckCircle2 className="mx-auto h-14 w-14 text-herb" />
+          <h1 className="mt-6 font-display text-4xl font-700 text-foreground">Order placed!</h1>
           <p className="mt-3 text-muted-foreground">
-            Your order <span className="font-semibold text-foreground">{success}</span> has been received. We'll
-            confirm it on WhatsApp shortly.
+            Your order <span className="font-semibold text-foreground">{success.orderNumber}</span> has been received.
+            We've opened WhatsApp so you can send the enquiry to confirm it.
           </p>
-          <div className="mt-8 flex justify-center gap-3">
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <a
+              href={success.waUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-full bg-[#25D366] px-6 py-2.5 text-sm font-semibold text-white hover:opacity-90"
+            >
+              <MessageCircle className="h-4 w-4" /> Send WhatsApp enquiry
+            </a>
             <button onClick={() => navigate({ to: "/account/orders" })} className="rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90">
               View my orders
             </button>
