@@ -1,11 +1,61 @@
-import { Heart, ShoppingBag } from "lucide-react";
+import { Heart, ShoppingBag, ChevronLeft, ChevronRight } from "lucide-react";
+import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useProducts } from "@/hooks/useProducts";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWishlist } from "@/hooks/useWishlist";
-import { resolveProductImage } from "@/lib/productImages";
+import { resolveProductImages } from "@/lib/productImages";
 import { toast } from "sonner";
+
+function ProductGallery({ images, alt }: { images: string[]; alt: string }) {
+  const [idx, setIdx] = useState(0);
+  const count = images.length;
+  const go = (next: number) => setIdx((next + count) % count);
+  return (
+    <div className="relative aspect-square overflow-hidden bg-cream">
+      <img
+        src={images[idx]}
+        alt={alt}
+        width={800}
+        height={800}
+        loading="lazy"
+        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+      />
+      {count > 1 && (
+        <>
+          <button
+            type="button"
+            aria-label="Previous image"
+            onClick={(e) => { e.stopPropagation(); go(idx - 1); }}
+            className="absolute left-2 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-background/80 text-foreground shadow-soft hover:bg-background"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </button>
+          <button
+            type="button"
+            aria-label="Next image"
+            onClick={(e) => { e.stopPropagation(); go(idx + 1); }}
+            className="absolute right-2 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-background/80 text-foreground shadow-soft hover:bg-background"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </button>
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+            {images.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                aria-label={`Go to image ${i + 1}`}
+                onClick={(e) => { e.stopPropagation(); setIdx(i); }}
+                className={`h-1.5 rounded-full transition-all ${i === idx ? "w-5 bg-foreground" : "w-1.5 bg-foreground/40"}`}
+              />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
 
 export function Products() {
   const { products, loading } = useProducts();
