@@ -69,15 +69,14 @@ export function Products() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
-            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-terracotta">
-              Kanti Store
+            <span className="font-marathi text-xs font-semibold uppercase tracking-[0.2em] text-terracotta">
+              कांती स्टोअर
             </span>
-            <h2 className="mt-3 font-display text-4xl font-700 text-foreground md:text-5xl">
-              Products for <span className="italic text-primary">you</span>
+            <h2 className="mt-3 font-marathi-display text-4xl font-700 leading-snug text-foreground md:text-5xl">
+              तुमच्यासाठी निवडक <span className="text-primary">उत्पादने</span>
             </h2>
-            <p className="mt-3 max-w-xl text-muted-foreground">
-              <span className="font-marathi">प्रत्येक उत्पादन आत्ता ₹1 introductory price मध्ये.</span>{" "}
-              Each product is currently at an introductory price of ₹1.
+            <p className="mt-3 max-w-xl font-marathi text-muted-foreground">
+              १००% हर्बल, हस्तनिर्मित आणि सर्व त्वचेसाठी सुरक्षित — कांतीची काळजीपूर्वक तयार केलेली उत्पादने.
             </p>
           </div>
         </div>
@@ -102,30 +101,28 @@ export function Products() {
                     <button
                       onClick={async () => {
                         if (!user) {
-                          toast.info("Sign in to save favourites");
+                          toast.info("आवडती उत्पादने जतन करण्यासाठी लॉगिन करा");
                           navigate({ to: "/auth", search: { redirect: "/" } });
                           return;
                         }
                         await toggle(p.id);
-                        toast.success(wished ? "Removed from wishlist" : "Added to wishlist");
+                        toast.success(wished ? "विशलिस्टमधून काढले" : "विशलिस्टमध्ये जोडले");
                       }}
                       className="absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-background/90 text-foreground/70 shadow-soft transition hover:text-terracotta"
-                      aria-label="Toggle wishlist"
+                      aria-label="विशलिस्ट"
                     >
                       <Heart className={`h-4 w-4 ${wished ? "fill-terracotta text-terracotta" : ""}`} />
                     </button>
                     {p.original_price && (
                       <span className="absolute left-4 top-4 z-10 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground shadow-soft">
-                        {Math.round((1 - Number(p.price) / Number(p.original_price)) * 100)}% OFF
+                        {Math.round((1 - Number(p.price) / Number(p.original_price)) * 100)}% सूट
                       </span>
                     )}
                   </div>
                   <div className="p-6">
-                    <h3 className="font-display text-xl font-600 text-foreground">{p.name}</h3>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      {p.subtitle_mr && <span className="font-marathi">{p.subtitle_mr}</span>}
-                      {p.subtitle_mr && p.subtitle_en && " · "}
-                      {p.subtitle_en}
+                    <h3 className="font-marathi-display text-xl font-600 text-foreground">{p.name}</h3>
+                    <p className="mt-1 font-marathi text-sm text-muted-foreground">
+                      {p.subtitle_mr || p.subtitle_en}
                     </p>
                     <div className="mt-4 flex items-baseline gap-2">
                       <span className="font-display text-2xl font-700 text-primary">
@@ -145,11 +142,11 @@ export function Products() {
                           price: Number(p.price),
                           image_url: p.image_url,
                         });
-                        toast.success("Added to cart");
+                        toast.success("कार्टमध्ये जोडले");
                       }}
-                      className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
+                      className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-2.5 font-marathi text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
                     >
-                      <ShoppingBag className="h-4 w-4" /> Add to cart
+                      <ShoppingBag className="h-4 w-4" /> कार्टमध्ये टाका
                     </button>
                   </div>
                 </article>
