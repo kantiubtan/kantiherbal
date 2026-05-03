@@ -1,5 +1,8 @@
-import ubtan from "@/assets/product-ubtan.jpg";
 import hamper from "@/assets/hamper.jpg";
+
+import ubtan1 from "@/assets/products/ubtan-1.png";
+import ubtan2 from "@/assets/products/ubtan-2.png";
+import ubtan3 from "@/assets/products/ubtan-3.png";
 
 import bathsalt1 from "@/assets/products/bathsalt-1.png";
 import bathsalt2 from "@/assets/products/bathsalt-2.png";
@@ -15,9 +18,11 @@ import facemask2 from "@/assets/products/facemask-2.jpg";
 import faceoil1 from "@/assets/products/faceoil-1.png";
 import faceoil2 from "@/assets/products/faceoil-2.jpg";
 
+const ubtan = ubtan1;
+
 // Multiple images per product slug (for carousels)
 const gallery: Record<string, string[]> = {
-  ubtan: [ubtan],
+  ubtan: [ubtan1, ubtan2, ubtan3],
   "bath-salt": [bathsalt1, bathsalt2, bathsalt3, bathsalt4],
   soap: [soap1, soap2],
   "face-mask": [facemask1, facemask2],
