@@ -1,11 +1,61 @@
-import { Heart, ShoppingBag } from "lucide-react";
+import { Heart, ShoppingBag, ChevronLeft, ChevronRight } from "lucide-react";
+import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useProducts } from "@/hooks/useProducts";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWishlist } from "@/hooks/useWishlist";
-import { resolveProductImage } from "@/lib/productImages";
+import { resolveProductImages } from "@/lib/productImages";
 import { toast } from "sonner";
+
+function ProductGallery({ images, alt }: { images: string[]; alt: string }) {
+  const [idx, setIdx] = useState(0);
+  const count = images.length;
+  const go = (next: number) => setIdx((next + count) % count);
+  return (
+    <div className="relative aspect-square overflow-hidden bg-cream">
+      <img
+        src={images[idx]}
+        alt={alt}
+        width={800}
+        height={800}
+        loading="lazy"
+        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+      />
+      {count > 1 && (
+        <>
+          <button
+            type="button"
+            aria-label="Previous image"
+            onClick={(e) => { e.stopPropagation(); go(idx - 1); }}
+            className="absolute left-2 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-background/80 text-foreground shadow-soft hover:bg-background"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </button>
+          <button
+            type="button"
+            aria-label="Next image"
+            onClick={(e) => { e.stopPropagation(); go(idx + 1); }}
+            className="absolute right-2 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-background/80 text-foreground shadow-soft hover:bg-background"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </button>
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+            {images.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                aria-label={`Go to image ${i + 1}`}
+                onClick={(e) => { e.stopPropagation(); setIdx(i); }}
+                className={`h-1.5 rounded-full transition-all ${i === idx ? "w-5 bg-foreground" : "w-1.5 bg-foreground/40"}`}
+              />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
 
 export function Products() {
   const { products, loading } = useProducts();
@@ -47,15 +97,8 @@ export function Products() {
                   key={p.id}
                   className="group overflow-hidden rounded-3xl border border-border/60 bg-card shadow-card transition hover:-translate-y-1 hover:shadow-glow"
                 >
-                  <div className="relative aspect-square overflow-hidden bg-cream">
-                    <img
-                      src={resolveProductImage(p.image_url)}
-                      alt={p.name}
-                      width={800}
-                      height={800}
-                      loading="lazy"
-                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
+                  <div className="relative">
+                    <ProductGallery images={resolveProductImages(p.slug, p.image_url)} alt={p.name} />
                     <button
                       onClick={async () => {
                         if (!user) {
@@ -66,13 +109,13 @@ export function Products() {
                         await toggle(p.id);
                         toast.success(wished ? "Removed from wishlist" : "Added to wishlist");
                       }}
-                      className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-background/90 text-foreground/70 shadow-soft transition hover:text-terracotta"
+                      className="absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-background/90 text-foreground/70 shadow-soft transition hover:text-terracotta"
                       aria-label="Toggle wishlist"
                     >
                       <Heart className={`h-4 w-4 ${wished ? "fill-terracotta text-terracotta" : ""}`} />
                     </button>
                     {p.original_price && (
-                      <span className="absolute left-4 top-4 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground shadow-soft">
+                      <span className="absolute left-4 top-4 z-10 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground shadow-soft">
                         {Math.round((1 - Number(p.price) / Number(p.original_price)) * 100)}% OFF
                       </span>
                     )}
