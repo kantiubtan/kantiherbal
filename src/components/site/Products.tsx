@@ -97,15 +97,8 @@ export function Products() {
                   key={p.id}
                   className="group overflow-hidden rounded-3xl border border-border/60 bg-card shadow-card transition hover:-translate-y-1 hover:shadow-glow"
                 >
-                  <div className="relative aspect-square overflow-hidden bg-cream">
-                    <img
-                      src={resolveProductImage(p.image_url)}
-                      alt={p.name}
-                      width={800}
-                      height={800}
-                      loading="lazy"
-                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
+                  <div className="relative">
+                    <ProductGallery images={resolveProductImages(p.slug, p.image_url)} alt={p.name} />
                     <button
                       onClick={async () => {
                         if (!user) {
@@ -116,13 +109,13 @@ export function Products() {
                         await toggle(p.id);
                         toast.success(wished ? "Removed from wishlist" : "Added to wishlist");
                       }}
-                      className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-background/90 text-foreground/70 shadow-soft transition hover:text-terracotta"
+                      className="absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-background/90 text-foreground/70 shadow-soft transition hover:text-terracotta"
                       aria-label="Toggle wishlist"
                     >
                       <Heart className={`h-4 w-4 ${wished ? "fill-terracotta text-terracotta" : ""}`} />
                     </button>
                     {p.original_price && (
-                      <span className="absolute left-4 top-4 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground shadow-soft">
+                      <span className="absolute left-4 top-4 z-10 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground shadow-soft">
                         {Math.round((1 - Number(p.price) / Number(p.original_price)) * 100)}% OFF
                       </span>
                     )}
