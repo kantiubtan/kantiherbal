@@ -13,7 +13,6 @@ import soap1 from "@/assets/products/soap-1.png";
 import soap2 from "@/assets/products/soap-2.jpg";
 import soap3 from "@/assets/products/soap-3.png";
 
-import facemask1 from "@/assets/products/facemask-1.png";
 import facemask2 from "@/assets/products/facemask-2.jpg";
 
 import faceoil1 from "@/assets/products/faceoil-1.png";
@@ -26,7 +25,7 @@ const gallery: Record<string, string[]> = {
   ubtan: [ubtan1, ubtan2, ubtan3],
   "bath-salt": [bathsalt1, bathsalt2, bathsalt3, bathsalt4],
   soap: [soap1, soap2, soap3],
-  "face-mask": [facemask1, facemask2],
+  "face-mask": [facemask2],
   "face-oil": [faceoil1, faceoil2],
   hamper: [hamper],
 };
