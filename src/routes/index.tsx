@@ -3,8 +3,10 @@ import { Header } from "@/components/site/Header";
 import { Hero } from "@/components/site/Hero";
 import { Features } from "@/components/site/Features";
 import { Products } from "@/components/site/Products";
+import { WhyKanti } from "@/components/site/WhyKanti";
 import { Hampers } from "@/components/site/Hampers";
 import { HowItWorks } from "@/components/site/HowItWorks";
+import { FoundersNote } from "@/components/site/FoundersNote";
 import { Contact } from "@/components/site/Contact";
 import { Footer } from "@/components/site/Footer";
 

@@ -8,6 +8,7 @@ export type Product = {
   subtitle_mr: string | null;
   subtitle_en: string | null;
   description: string | null;
+  seo_description: string | null;
   price: number;
   original_price: number | null;
   image_url: string | null;
