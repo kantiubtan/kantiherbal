@@ -33,7 +33,7 @@ const gallery: Record<string, string[]> = {
 // Legacy DB image_url path → first gallery image
 const map: Record<string, string> = {
   "/src/assets/product-ubtan.jpg": ubtan,
-  "/src/assets/product-facemask.jpg": facemask1,
+  "/src/assets/product-facemask.jpg": facemask2,
   "/src/assets/product-bathsalt.jpg": bathsalt1,
   "/src/assets/product-soap.jpg": soap1,
   "/src/assets/product-faceoil.jpg": faceoil1,
