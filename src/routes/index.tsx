@@ -38,8 +38,10 @@ function Index() {
         <Hero />
         <Features />
         <Products />
+        <WhyKanti />
         <Hampers />
         <HowItWorks />
+        <FoundersNote />
         <Contact />
       </main>
       <Footer />
