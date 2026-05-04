@@ -1,4 +1,5 @@
 import heroImg from "@/assets/products/ubtan-1.png";
+import heroVideo from "@/assets/kanti-hero.mp4";
 import { ArrowRight, Sparkles } from "lucide-react";
 
 export function Hero() {
