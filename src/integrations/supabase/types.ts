@@ -177,6 +177,7 @@ export type Database = {
           name: string
           original_price: number | null
           price: number
+          seo_description: string | null
           slug: string
           sort_order: number
           subtitle_en: string | null
@@ -192,6 +193,7 @@ export type Database = {
           name: string
           original_price?: number | null
           price?: number
+          seo_description?: string | null
           slug: string
           sort_order?: number
           subtitle_en?: string | null
@@ -207,6 +209,7 @@ export type Database = {
           name?: string
           original_price?: number | null
           price?: number
+          seo_description?: string | null
           slug?: string
           sort_order?: number
           subtitle_en?: string | null
