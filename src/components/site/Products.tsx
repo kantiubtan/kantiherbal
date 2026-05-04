@@ -1,4 +1,4 @@
-import { Heart, ShoppingBag, ChevronLeft, ChevronRight } from "lucide-react";
+import { Heart, ShoppingBag, ChevronLeft, ChevronRight, Leaf, Sprout, ShieldCheck, HandHeart } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useProducts } from "@/hooks/useProducts";
@@ -148,6 +148,12 @@ export function Products() {
                     >
                       <ShoppingBag className="h-4 w-4" /> कार्टमध्ये टाका
                     </button>
+                    <ul className="mt-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 border-t border-border/50 pt-4 font-marathi text-[11px] font-medium text-muted-foreground">
+                      <li className="inline-flex items-center gap-1"><Leaf className="h-3.5 w-3.5 text-primary" /> नैसर्गिक</li>
+                      <li className="inline-flex items-center gap-1"><Sprout className="h-3.5 w-3.5 text-primary" /> व्हीगन</li>
+                      <li className="inline-flex items-center gap-1"><ShieldCheck className="h-3.5 w-3.5 text-primary" /> क्रूरतामुक्त</li>
+                      <li className="inline-flex items-center gap-1"><HandHeart className="h-3.5 w-3.5 text-primary" /> हस्तनिर्मित</li>
+                    </ul>
                   </div>
                 </article>
               );
