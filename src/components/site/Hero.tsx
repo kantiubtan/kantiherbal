@@ -45,11 +45,14 @@ export function Hero() {
         <div className="relative">
           <div className="absolute -inset-6 rounded-[2.5rem] bg-sun opacity-20 blur-3xl" aria-hidden />
           <div className="relative overflow-hidden rounded-[2rem] border border-border/60 bg-card shadow-glow">
-            <img
-              src={heroImg}
-              alt="कांती उटणे — हळद, चंदन, गुलाब पाकळ्या आणि औषधी वनस्पतींपासून बनलेले पारंपरिक उटणे"
-              width={1280}
-              height={1280}
+            <video
+              src={heroVideo}
+              poster={heroImg}
+              autoPlay
+              muted
+              loop
+              playsInline
+              aria-label="कांती हर्बल स्किनकेअर"
               className="aspect-square w-full object-cover"
             />
           </div>
