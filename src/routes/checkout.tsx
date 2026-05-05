@@ -105,7 +105,7 @@ function CheckoutPage() {
           user_id: user.id,
           total_amount: total,
           status: "pending",
-          payment_method: "cod",
+          payment_method: paymentMethod,
           notes,
           shipping_full_name: shipping.full_name,
           shipping_phone: shipping.phone,
@@ -131,20 +131,73 @@ function CheckoutPage() {
       );
       if (ierr) throw ierr;
 
-      // Build WhatsApp enquiry message for the shop
-      const lines = items
-        .map((it) => `• ${it.name} × ${it.quantity} — ₹${(it.price * it.quantity).toFixed(0)}`)
-        .join("\n");
-      const msg = `*New Kanti order ${order.order_number}*\n\n${lines}\n\n*Total:* ₹${total.toFixed(0)}\n*Payment:* COD\n\n*Ship to:*\n${shipping.full_name}\n${shipping.line1}${shipping.line2 ? ", " + shipping.line2 : ""}\n${shipping.city}, ${shipping.state} — ${shipping.pincode}\n📞 ${shipping.phone}${notes ? `\n\n*Notes:* ${notes}` : ""}`;
-      const waUrl = whatsappLink(msg);
+      // Build WhatsApp message helper
+      const buildWaUrl = (paid: boolean) => {
+        const lines = items
+          .map((it) => `• ${it.name} × ${it.quantity} — ₹${(it.price * it.quantity).toFixed(0)}`)
+          .join("\n");
+        const payLabel = paymentMethod === "cod" ? "COD" : paid ? "Paid Online ✅" : "Online (pending)";
+        const msg = `*New Kanti order ${order.order_number}*\n\n${lines}\n\n*Total:* ₹${total.toFixed(0)}\n*Payment:* ${payLabel}\n\n*Ship to:*\n${shipping!.full_name}\n${shipping!.line1}${shipping!.line2 ? ", " + shipping!.line2 : ""}\n${shipping!.city}, ${shipping!.state} — ${shipping!.pincode}\n📞 ${shipping!.phone}${notes ? `\n\n*Notes:* ${notes}` : ""}`;
+        return whatsappLink(msg);
+      };
 
-      // Open WhatsApp in a new tab so the customer can send the enquiry
-      if (typeof window !== "undefined") {
-        window.open(waUrl, "_blank", "noopener,noreferrer");
+      if (paymentMethod === "cod") {
+        const waUrl = buildWaUrl(false);
+        if (typeof window !== "undefined") window.open(waUrl, "_blank", "noopener,noreferrer");
+        clear();
+        setSuccess({ orderNumber: order.order_number, waUrl });
+        return;
       }
 
-      clear();
-      setSuccess({ orderNumber: order.order_number, waUrl });
+      // Online payment via Razorpay
+      const ok = await loadRazorpayScript();
+      if (!ok) throw new Error("Failed to load payment gateway");
+
+      const rzp = await createRazorpayOrder({ data: { orderId: order.id } });
+
+      await new Promise<void>((resolve, reject) => {
+        const checkout = new window.Razorpay({
+          key: rzp.keyId,
+          amount: rzp.amount,
+          currency: rzp.currency,
+          name: "Kanti Herbal",
+          description: `Order ${rzp.orderNumber}`,
+          order_id: rzp.razorpayOrderId,
+          prefill: {
+            name: shipping!.full_name,
+            contact: shipping!.phone,
+            email: user.email ?? "",
+          },
+          theme: { color: "#3a5a40" },
+          handler: async (response: any) => {
+            try {
+              await verifyRazorpayPayment({
+                data: {
+                  orderId: order.id,
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                },
+              });
+              const waUrl = buildWaUrl(true);
+              if (typeof window !== "undefined") window.open(waUrl, "_blank", "noopener,noreferrer");
+              clear();
+              setSuccess({ orderNumber: order.order_number, waUrl });
+              resolve();
+            } catch (err) {
+              reject(err);
+            }
+          },
+          modal: {
+            ondismiss: () => {
+              toast.error("Payment cancelled. Your order is saved as pending.");
+              reject(new Error("Payment cancelled"));
+            },
+          },
+        });
+        checkout.open();
+      });
+
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : "Order failed");
     } finally {
