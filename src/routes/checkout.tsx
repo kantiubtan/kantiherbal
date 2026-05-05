@@ -352,7 +352,7 @@ function CheckoutPage() {
               disabled={placing || items.length === 0}
               className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-primary py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
             >
-              {placing ? "Placing order…" : "Place order"}
+              {placing ? "Processing…" : paymentMethod === "online" ? `Pay ₹${total.toFixed(0)}` : "Place order (COD)"}
             </button>
           </aside>
         </form>
