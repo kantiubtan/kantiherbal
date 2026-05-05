@@ -8,6 +8,25 @@ import { Footer } from "@/components/site/Footer";
 import { whatsappLink } from "@/lib/contact";
 import { toast } from "sonner";
 import { CheckCircle2, MessageCircle } from "lucide-react";
+import { createRazorpayOrder, verifyRazorpayPayment } from "@/server/razorpay.functions";
+
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
+
+function loadRazorpayScript(): Promise<boolean> {
+  return new Promise((resolve) => {
+    if (typeof window === "undefined") return resolve(false);
+    if (window.Razorpay) return resolve(true);
+    const s = document.createElement("script");
+    s.src = "https://checkout.razorpay.com/v1/checkout.js";
+    s.onload = () => resolve(true);
+    s.onerror = () => resolve(false);
+    document.body.appendChild(s);
+  });
+}
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({ meta: [{ title: "Checkout — Kanti" }] }),
@@ -34,6 +53,7 @@ function CheckoutPage() {
   const [selected, setSelected] = useState<string | null>(null);
   const [notes, setNotes] = useState("");
   const [placing, setPlacing] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<"online" | "cod">("online");
   const [success, setSuccess] = useState<{ orderNumber: string; waUrl: string } | null>(null);
 
   // Inline new-address form
@@ -85,7 +105,7 @@ function CheckoutPage() {
           user_id: user.id,
           total_amount: total,
           status: "pending",
-          payment_method: "cod",
+          payment_method: paymentMethod,
           notes,
           shipping_full_name: shipping.full_name,
           shipping_phone: shipping.phone,
@@ -111,20 +131,73 @@ function CheckoutPage() {
       );
       if (ierr) throw ierr;
 
-      // Build WhatsApp enquiry message for the shop
-      const lines = items
-        .map((it) => `• ${it.name} × ${it.quantity} — ₹${(it.price * it.quantity).toFixed(0)}`)
-        .join("\n");
-      const msg = `*New Kanti order ${order.order_number}*\n\n${lines}\n\n*Total:* ₹${total.toFixed(0)}\n*Payment:* COD\n\n*Ship to:*\n${shipping.full_name}\n${shipping.line1}${shipping.line2 ? ", " + shipping.line2 : ""}\n${shipping.city}, ${shipping.state} — ${shipping.pincode}\n📞 ${shipping.phone}${notes ? `\n\n*Notes:* ${notes}` : ""}`;
-      const waUrl = whatsappLink(msg);
+      // Build WhatsApp message helper
+      const buildWaUrl = (paid: boolean) => {
+        const lines = items
+          .map((it) => `• ${it.name} × ${it.quantity} — ₹${(it.price * it.quantity).toFixed(0)}`)
+          .join("\n");
+        const payLabel = paymentMethod === "cod" ? "COD" : paid ? "Paid Online ✅" : "Online (pending)";
+        const msg = `*New Kanti order ${order.order_number}*\n\n${lines}\n\n*Total:* ₹${total.toFixed(0)}\n*Payment:* ${payLabel}\n\n*Ship to:*\n${shipping!.full_name}\n${shipping!.line1}${shipping!.line2 ? ", " + shipping!.line2 : ""}\n${shipping!.city}, ${shipping!.state} — ${shipping!.pincode}\n📞 ${shipping!.phone}${notes ? `\n\n*Notes:* ${notes}` : ""}`;
+        return whatsappLink(msg);
+      };
 
-      // Open WhatsApp in a new tab so the customer can send the enquiry
-      if (typeof window !== "undefined") {
-        window.open(waUrl, "_blank", "noopener,noreferrer");
+      if (paymentMethod === "cod") {
+        const waUrl = buildWaUrl(false);
+        if (typeof window !== "undefined") window.open(waUrl, "_blank", "noopener,noreferrer");
+        clear();
+        setSuccess({ orderNumber: order.order_number, waUrl });
+        return;
       }
 
-      clear();
-      setSuccess({ orderNumber: order.order_number, waUrl });
+      // Online payment via Razorpay
+      const ok = await loadRazorpayScript();
+      if (!ok) throw new Error("Failed to load payment gateway");
+
+      const rzp = await createRazorpayOrder({ data: { orderId: order.id } });
+
+      await new Promise<void>((resolve, reject) => {
+        const checkout = new window.Razorpay({
+          key: rzp.keyId,
+          amount: rzp.amount,
+          currency: rzp.currency,
+          name: "Kanti Herbal",
+          description: `Order ${rzp.orderNumber}`,
+          order_id: rzp.razorpayOrderId,
+          prefill: {
+            name: shipping!.full_name,
+            contact: shipping!.phone,
+            email: user.email ?? "",
+          },
+          theme: { color: "#3a5a40" },
+          handler: async (response: any) => {
+            try {
+              await verifyRazorpayPayment({
+                data: {
+                  orderId: order.id,
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                },
+              });
+              const waUrl = buildWaUrl(true);
+              if (typeof window !== "undefined") window.open(waUrl, "_blank", "noopener,noreferrer");
+              clear();
+              setSuccess({ orderNumber: order.order_number, waUrl });
+              resolve();
+            } catch (err) {
+              reject(err);
+            }
+          },
+          modal: {
+            ondismiss: () => {
+              toast.error("Payment cancelled. Your order is saved as pending.");
+              reject(new Error("Payment cancelled"));
+            },
+          },
+        });
+        checkout.open();
+      });
+
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : "Order failed");
     } finally {
@@ -240,7 +313,22 @@ function CheckoutPage() {
 
             <section className="rounded-3xl border border-border/60 bg-card p-6 shadow-card">
               <h2 className="font-display text-xl font-700 text-foreground">Payment</h2>
-              <p className="mt-2 text-sm text-muted-foreground">Cash on Delivery (COD)</p>
+              <div className="mt-3 space-y-2">
+                <label className={`flex cursor-pointer items-start gap-3 rounded-2xl border p-4 transition ${paymentMethod === "online" ? "border-primary bg-primary/5" : "border-border"}`}>
+                  <input type="radio" name="pm" checked={paymentMethod === "online"} onChange={() => setPaymentMethod("online")} className="mt-1" />
+                  <div className="text-sm">
+                    <div className="font-display text-base font-700 text-foreground">Pay Online</div>
+                    <div className="text-muted-foreground">UPI, Cards, NetBanking & Wallets via Razorpay</div>
+                  </div>
+                </label>
+                <label className={`flex cursor-pointer items-start gap-3 rounded-2xl border p-4 transition ${paymentMethod === "cod" ? "border-primary bg-primary/5" : "border-border"}`}>
+                  <input type="radio" name="pm" checked={paymentMethod === "cod"} onChange={() => setPaymentMethod("cod")} className="mt-1" />
+                  <div className="text-sm">
+                    <div className="font-display text-base font-700 text-foreground">Cash on Delivery</div>
+                    <div className="text-muted-foreground">Pay in cash when your order arrives</div>
+                  </div>
+                </label>
+              </div>
             </section>
           </div>
 
@@ -264,7 +352,7 @@ function CheckoutPage() {
               disabled={placing || items.length === 0}
               className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-primary py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
             >
-              {placing ? "Placing order…" : "Place order"}
+              {placing ? "Processing…" : paymentMethod === "online" ? `Pay ₹${total.toFixed(0)}` : "Place order (COD)"}
             </button>
           </aside>
         </form>
