@@ -53,6 +53,7 @@ function CheckoutPage() {
   const [selected, setSelected] = useState<string | null>(null);
   const [notes, setNotes] = useState("");
   const [placing, setPlacing] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<"online" | "cod">("online");
   const [success, setSuccess] = useState<{ orderNumber: string; waUrl: string } | null>(null);
 
   // Inline new-address form
