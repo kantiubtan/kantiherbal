@@ -313,7 +313,22 @@ function CheckoutPage() {
 
             <section className="rounded-3xl border border-border/60 bg-card p-6 shadow-card">
               <h2 className="font-display text-xl font-700 text-foreground">Payment</h2>
-              <p className="mt-2 text-sm text-muted-foreground">Cash on Delivery (COD)</p>
+              <div className="mt-3 space-y-2">
+                <label className={`flex cursor-pointer items-start gap-3 rounded-2xl border p-4 transition ${paymentMethod === "online" ? "border-primary bg-primary/5" : "border-border"}`}>
+                  <input type="radio" name="pm" checked={paymentMethod === "online"} onChange={() => setPaymentMethod("online")} className="mt-1" />
+                  <div className="text-sm">
+                    <div className="font-display text-base font-700 text-foreground">Pay Online</div>
+                    <div className="text-muted-foreground">UPI, Cards, NetBanking & Wallets via Razorpay</div>
+                  </div>
+                </label>
+                <label className={`flex cursor-pointer items-start gap-3 rounded-2xl border p-4 transition ${paymentMethod === "cod" ? "border-primary bg-primary/5" : "border-border"}`}>
+                  <input type="radio" name="pm" checked={paymentMethod === "cod"} onChange={() => setPaymentMethod("cod")} className="mt-1" />
+                  <div className="text-sm">
+                    <div className="font-display text-base font-700 text-foreground">Cash on Delivery</div>
+                    <div className="text-muted-foreground">Pay in cash when your order arrives</div>
+                  </div>
+                </label>
+              </div>
             </section>
           </div>
 
