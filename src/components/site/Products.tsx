@@ -6,6 +6,7 @@ import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWishlist } from "@/hooks/useWishlist";
 import { resolveProductImages } from "@/lib/productImages";
+import { useLang } from "@/contexts/LanguageContext";
 import { toast } from "sonner";
 
 function ProductGallery({ images, alt }: { images: string[]; alt: string }) {
@@ -14,42 +15,13 @@ function ProductGallery({ images, alt }: { images: string[]; alt: string }) {
   const go = (next: number) => setIdx((next + count) % count);
   return (
     <div className="relative aspect-square overflow-hidden bg-cream">
-      <img
-        src={images[idx]}
-        alt={alt}
-        width={800}
-        height={800}
-        loading="lazy"
-        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-      />
+      <img src={images[idx]} alt={alt} width={800} height={800} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
       {count > 1 && (
         <>
-          <button
-            type="button"
-            aria-label="Previous image"
-            onClick={(e) => { e.stopPropagation(); go(idx - 1); }}
-            className="absolute left-2 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-background/80 text-foreground shadow-soft hover:bg-background"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </button>
-          <button
-            type="button"
-            aria-label="Next image"
-            onClick={(e) => { e.stopPropagation(); go(idx + 1); }}
-            className="absolute right-2 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-background/80 text-foreground shadow-soft hover:bg-background"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </button>
+          <button type="button" aria-label="Previous image" onClick={(e) => { e.stopPropagation(); go(idx - 1); }} className="absolute left-2 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-background/80 text-foreground shadow-soft hover:bg-background"><ChevronLeft className="h-4 w-4" /></button>
+          <button type="button" aria-label="Next image" onClick={(e) => { e.stopPropagation(); go(idx + 1); }} className="absolute right-2 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-background/80 text-foreground shadow-soft hover:bg-background"><ChevronRight className="h-4 w-4" /></button>
           <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
-            {images.map((_, i) => (
-              <button
-                key={i}
-                type="button"
-                aria-label={`Go to image ${i + 1}`}
-                onClick={(e) => { e.stopPropagation(); setIdx(i); }}
-                className={`h-1.5 rounded-full transition-all ${i === idx ? "w-5 bg-foreground" : "w-1.5 bg-foreground/40"}`}
-              />
-            ))}
+            {images.map((_, i) => (<button key={i} type="button" aria-label={`Go to image ${i + 1}`} onClick={(e) => { e.stopPropagation(); setIdx(i); }} className={`h-1.5 rounded-full transition-all ${i === idx ? "w-5 bg-foreground" : "w-1.5 bg-foreground/40"}`} />))}
           </div>
         </>
       )}
@@ -63,96 +35,78 @@ export function Products() {
   const { user } = useAuth();
   const { has, toggle } = useWishlist();
   const navigate = useNavigate();
+  const { t, lang } = useLang();
+  const display = lang === "mr" ? "font-marathi-display" : "font-display";
+  const body = lang === "mr" ? "font-marathi" : "font-sans";
 
   return (
     <section id="products" className="relative py-20 md:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
-            <span className="font-marathi text-xs font-semibold uppercase tracking-[0.2em] text-terracotta">
-              कांती स्टोअर
-            </span>
-            <h2 className="mt-3 font-marathi-display text-4xl font-700 leading-snug text-foreground md:text-5xl">
-              तुमच्यासाठी निवडक <span className="text-primary">उत्पादने</span>
+            <span className={`${body} text-xs font-semibold uppercase tracking-[0.22em] text-terracotta`}>{t("products.eyebrow")}</span>
+            <h2 className={`mt-3 ${display} text-4xl font-700 leading-[1.1] text-foreground md:text-5xl`}>
+              {t("products.title.1")} <span className="italic text-primary">{t("products.title.2")}</span>
             </h2>
-            <p className="mt-3 max-w-xl font-marathi text-muted-foreground">
-              १००% हर्बल, हस्तनिर्मित आणि सर्व त्वचेसाठी सुरक्षित — कांतीची काळजीपूर्वक तयार केलेली उत्पादने.
-            </p>
+            <p className={`mt-3 max-w-xl ${body} text-muted-foreground`}>{t("products.subtitle")}</p>
           </div>
         </div>
 
         {loading ? (
           <div className="mt-12 grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="aspect-[4/5] animate-pulse rounded-3xl bg-muted" />
-            ))}
+            {Array.from({ length: 6 }).map((_, i) => (<div key={i} className="aspect-[4/5] animate-pulse rounded-3xl bg-muted" />))}
           </div>
         ) : (
           <div className="mt-12 grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
             {products.map((p) => {
               const wished = has(p.id);
+              const subtitle = lang === "mr" ? (p.subtitle_mr || p.subtitle_en) : (p.subtitle_en || p.subtitle_mr);
               return (
-                <article
-                  key={p.id}
-                  className="group overflow-hidden rounded-3xl border border-border/60 bg-card shadow-card transition hover:-translate-y-1 hover:shadow-glow"
-                >
+                <article key={p.id} className="group overflow-hidden rounded-3xl border border-border/60 bg-card shadow-card transition hover:-translate-y-1 hover:shadow-glow">
                   <div className="relative">
                     <ProductGallery images={resolveProductImages(p.slug, p.image_url)} alt={p.name} />
                     <button
                       onClick={async () => {
                         if (!user) {
-                          toast.info("आवडती उत्पादने जतन करण्यासाठी लॉगिन करा");
+                          toast.info(t("products.toast.loginfav"));
                           navigate({ to: "/auth", search: { redirect: "/" } });
                           return;
                         }
                         await toggle(p.id);
-                        toast.success(wished ? "विशलिस्टमधून काढले" : "विशलिस्टमध्ये जोडले");
+                        toast.success(wished ? t("products.toast.wishrm") : t("products.toast.wishadd"));
                       }}
                       className="absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-background/90 text-foreground/70 shadow-soft transition hover:text-terracotta"
-                      aria-label="विशलिस्ट"
+                      aria-label="wishlist"
                     >
                       <Heart className={`h-4 w-4 ${wished ? "fill-terracotta text-terracotta" : ""}`} />
                     </button>
                     {p.original_price && (
-                      <span className="absolute left-4 top-4 z-10 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground shadow-soft">
-                        {Math.round((1 - Number(p.price) / Number(p.original_price)) * 100)}% सूट
+                      <span className={`absolute left-4 top-4 z-10 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground shadow-soft ${body}`}>
+                        {Math.round((1 - Number(p.price) / Number(p.original_price)) * 100)}% {t("products.discount")}
                       </span>
                     )}
                   </div>
                   <div className="p-6">
-                    <h3 className="font-marathi-display text-xl font-600 text-foreground">{p.name}</h3>
-                    <p className="mt-1 font-marathi text-sm text-muted-foreground">
-                      {p.subtitle_mr || p.subtitle_en}
-                    </p>
+                    <h3 className={`${display} text-xl font-600 text-foreground`}>{p.name}</h3>
+                    <p className={`mt-1 ${body} text-sm text-muted-foreground`}>{subtitle}</p>
                     <div className="mt-4 flex items-baseline gap-2">
-                      <span className="font-display text-2xl font-700 text-primary">
-                        ₹{Number(p.price).toFixed(0)}
-                      </span>
-                      {p.original_price && (
-                        <span className="text-sm text-muted-foreground line-through">
-                          ₹{Number(p.original_price).toFixed(0)}
-                        </span>
-                      )}
+                      <span className="font-display text-2xl font-700 text-primary">₹{Number(p.price).toFixed(0)}</span>
+                      {p.original_price && (<span className="text-sm text-muted-foreground line-through">₹{Number(p.original_price).toFixed(0)}</span>)}
                     </div>
                     <button
                       onClick={() => {
-                        add({
-                          id: p.id,
-                          name: p.name,
-                          price: Number(p.price),
-                          image_url: p.image_url,
-                        });
-                        toast.success("कार्टमध्ये जोडले");
+                        add({ id: p.id, name: p.name, price: Number(p.price), image_url: p.image_url });
+                        toast.success(t("products.toast.added"));
                       }}
-                      className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-2.5 font-marathi text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
+                      className={`mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 ${body}`}
                     >
-                      <ShoppingBag className="h-4 w-4" /> कार्टमध्ये टाका
+                      <ShoppingBag className="h-4 w-4" /> {t("products.add")}
                     </button>
-                    <ul className="mt-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 border-t border-border/50 pt-4 font-marathi text-[11px] font-medium text-muted-foreground">
-                      <li className="inline-flex items-center gap-1"><Leaf className="h-3.5 w-3.5 text-primary" /> नैसर्गिक</li>
-                      <li className="inline-flex items-center gap-1"><Sprout className="h-3.5 w-3.5 text-primary" /> व्हीगन</li>
-                      <li className="inline-flex items-center gap-1"><ShieldCheck className="h-3.5 w-3.5 text-primary" /> क्रूरतामुक्त</li>
-                      <li className="inline-flex items-center gap-1"><HandHeart className="h-3.5 w-3.5 text-primary" /> हस्तनिर्मित</li>
+                    <ul className={`mt-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 border-t border-border/50 pt-4 ${body} text-[11px] font-medium text-muted-foreground`}>
+                      <li className="inline-flex items-center gap-1"><Leaf className="h-3.5 w-3.5 text-primary" /> {t("products.tag.natural")}</li>
+                      <li className="inline-flex items-center gap-1"><Sprout className="h-3.5 w-3.5 text-primary" /> {t("products.tag.vegan")}</li>
+                      <li className="inline-flex items-center gap-1"><ShieldCheck className="h-3.5 w-3.5 text-primary" /> {t("products.tag.cruelty")}</li>
+                      <li className="inline-flex items-center gap-1"><HandHeart className="h-3.5 w-3.5 text-primary" /> {t("products.tag.handmade")}</li>
                     </ul>
                   </div>
                 </article>

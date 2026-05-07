@@ -1,7 +1,7 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
-@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=Inter:wght@400;500;600;700&family=Yatra+One&family=Mukta:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Tiro+Devanagari+Marathi:ital@0;1&family=Mukta:wght@300;400;500;600;700&display=swap");
 
 @custom-variant dark (&:is(.dark *));
 
@@ -61,9 +61,9 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
   --font-sans: "Mukta", "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Yatra One", "Fraunces", ui-serif, Georgia, serif;
-  --font-marathi: "Mukta", "Yatra One", serif;
-  --font-marathi-display: "Yatra One", "Fraunces", serif;
+  --font-display: "Playfair Display", "Cormorant Garamond", ui-serif, Georgia, serif;
+  --font-marathi: "Mukta", "Tiro Devanagari Marathi", serif;
+  --font-marathi-display: "Tiro Devanagari Marathi", "Playfair Display", serif;
   --color-turmeric: var(--turmeric);
   --color-terracotta: var(--terracotta);
   --color-herb: var(--herb);
